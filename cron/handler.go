@@ -12,12 +12,14 @@ type Handler struct {
 	messageChan chan struct{}
 }
 
+// inititlize the handler. needs to be called first before any other activity.
 func (h *Handler) Init(size int) {
-	//inititlize priorityQueue
+
 	h.pq = make(jobPQ, 0, size)
 	h.messageChan = make(chan struct{})
 }
 
+// Adds new jobs to the queue and runs a rutine that sleeps until the nearest job needs to be executed
 func (h *Handler) AddJob(id int64, date time.Time) {
 
 	h.mutex.Lock()
@@ -31,6 +33,7 @@ func (h *Handler) AddJob(id int64, date time.Time) {
 	go sleeper(h, h.messageChan)
 }
 
+// proceses all jobs that are past the current time of the system
 func (h *Handler) PopJob() {
 
 	h.mutex.Lock()
@@ -39,7 +42,7 @@ func (h *Handler) PopJob() {
 	for !h.pq.IsEmpty() && time.Until(h.pq.Peek().run_time) < 0 {
 		val := heap.Pop(&(h.pq)).(job)
 
-		workOnJob(val)
+		go workOnJob(val)
 	}
 
 	if !h.pq.IsEmpty() {

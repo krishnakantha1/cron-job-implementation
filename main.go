@@ -8,21 +8,18 @@ import (
 )
 
 func main() {
+	fmt.Println("service starting...")
+	//initilize the handler to add jobs
 	h := c.Handler{}
 
 	h.Init(10)
 
-	//fmt.Println(time.Until(time.Date(2023, time.April, 7, 2, 8, 0, 0, time.UTC)))
-
-	fmt.Println("second time insert")
+	//Add jobs as you like. to better simulate real world ive put some delay when new jobs are added to the queue
 	h.AddJob(2, time.Date(2023, time.April, 7, 14, 22, 5, 0, time.UTC))
-
-	time.Sleep(5 * time.Second)
-
-	fmt.Println("first time insert")
+	time.Sleep(5 * time.Second) //Delay the next entry
 	h.AddJob(1, time.Date(2023, time.April, 7, 14, 22, 0, 0, time.UTC))
 
+	//wait forever
 	for true {
-
 	}
 }
